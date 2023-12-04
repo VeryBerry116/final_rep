@@ -8,24 +8,75 @@ std::map<std::string, Female_Member*> flist;
 unsigned int member_count = 0;
 
 int main(){
-    int menu, submenu, num_member, nheight, nweight;
+    int menu, submenu, num_member, nheight, nweight, mf, nb, ns, nd, nwf, nwp, nc, nhwc;
     std::string temp;
     std::string name, gender, pw;
-    std::ifstream memberList("MemberList.txt");
+    /*std::ifstream memberList("MemberList.txt");
     if(!memberList.fail())
     {
         std::cout << "Loading DB file..." << std::endl;
+        mf = 0;
         while(1)
         {
             memberList >> temp;
             if(memberList.eof())
                 break;
+            if(temp.compare("|") == 0)
+            {
+                mf = 1;
+                continue;
+            }
             num_member = atoi(temp.c_str());
+            std::string f = "db/";
+            f.append(std::to_string(num_member));
+            f.append(".txt");
+            std::ifstream memberData(f);
+            if(!memberData.fail())
+            {
+                if(mf == 0)
+                {
+                    memberData >> name;
+                    memberData >> pw;
+                    memberData >> nb;
+                    memberData >> ns;
+                    memberData >> nd;
+                    memberData >> nwf;
+                    memberData >> nwp;
+                    memberData >> nhwc;
+                    Male_Member *mnode = new Male_Member(num_member, name, pw, nb, ns, nd, nwf, nwp);
+                    for(int i = 0; i < nhwc; i++)
+                    {
+                        if(memberData.eof())
+                            break;
+                        memberData >> nheight;
+                        memberData >> nweight;
+                        mnode->body_check(nheight, nweight);
+                    }
+                    mlist.insert(std::pair<std::string, Male_Member*>(name, mnode));
+                }
+                else
+                {
+                    memberData >> name;
+                    memberData >> pw;
+                    memberData >> nc;
+                    memberData >> nhwc;
+                    Female_Member *fnode = new Female_Member(num_member, name, pw, nc);
+                    for(int i = 0; i < nhwc; i++)
+                    {
+                        if(memberData.eof())
+                            break;
+                        memberData >> nheight;
+                        memberData >> nweight;
+                        fnode->body_check(nheight, nweight);
+                    }
+                    flist.insert(std::pair<std::string, Female_Member*>(name, fnode));
+                }
+            }
             std::cout << num_member << std::endl;
         }
     }
 
-    memberList.close();
+    memberList.close();*/
     while(1)
     {
         show_menu();
@@ -44,13 +95,17 @@ int main(){
             std::cin >> gender;
             if(gender == "Male")
             {
-                Male_Member *mnode = new Male_Member(++member_count, name);
+                std::cout << "Enter password : ";
+                std::cin >> pw;
+                Male_Member *mnode = new Male_Member(++member_count, name, pw);
                 mlist.insert(std::pair<std::string, Male_Member*>(name, mnode));
                 std::cout << name << " (Male) : Register Complete" << std::endl << std::endl;
             }
             else if(gender == "Female")
             {
-                Female_Member *fnode = new Female_Member(++member_count, name);
+                std::cout << "Enter password : ";
+                std::cin >> pw;
+                Female_Member *fnode = new Female_Member(++member_count, name, pw);
                 flist.insert(std::pair<std::string, Female_Member*>(name, fnode));
                 std::cout << name << " (Female) : Register Complete" << std::endl << std::endl;
             }
@@ -97,6 +152,19 @@ int main(){
         }
         else if(menu == 3)
         {
+            for(auto miter = mlist.begin(); miter != mlist.end(); miter++)
+            {
+                unsigned int mid = (miter->second)->getID();
+                std::cout << mid << std::endl;
+            }
+            for(auto fiter = flist.begin(); fiter != flist.end(); fiter++)
+            {
+                unsigned int fid = (fiter->second)->getID();
+                std::cout << fid << std::endl;
+            }
+
+
+
             std::cout << "Enter Nickname : ";
             std::cin >> temp;
             if(find_member(name) == 0)
@@ -104,6 +172,7 @@ int main(){
             else if(find_member(name) == 1)
             {
                 Male_Member *mnode = (mlist.find(name))->second;
+                std::cout << mnode->getID();
                 std::cout << "Enter password : ";
                 std::cin >> pw;
                 if(!mnode->log_in(pw))

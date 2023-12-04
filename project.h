@@ -44,14 +44,15 @@ protected:
     std::string     password;
     std::string     nickname;
     node*           head;
+    unsigned int    hw_count;
     unsigned int    goal;
 
 public:
-    Member(unsigned int data_in, std::string name);
+    Member(unsigned int data_in, std::string name, std::string pw);
     ~Member();
 
-    bool match_nickname(std::string name);
     unsigned int getID();
+    bool match_name()
     bool log_in(std::string pw);
     void show_member_info();
     void body_check(int h, int w);
@@ -61,16 +62,14 @@ public:
 
 class Male_Member : public Member {
 public:
-    Male_Member(unsigned int data_in, std::string name);
-    Male_Member(unsigned int data_in, std::string name, 
+    Male_Member(unsigned int data_in, std::string name, std::string pw);
+    Male_Member(unsigned int data_in, std::string name, std::string pw,
         unsigned int b, unsigned int s, unsigned int d, unsigned int wf, unsigned int wp);
     ~Male_Member(){
     }
 
     //void make_work_out_plan;
-
     void save_file();
-
 
 private:
     unsigned int    bench;
@@ -82,8 +81,8 @@ private:
 
 class Female_Member : public Member {
 public:
-    Female_Member(unsigned int data_int, std::string name);
-    Female_Member(unsigned int data_in, std::string name, unsigned int c);
+    Female_Member(unsigned int data_int, std::string name, std::string pw);
+    Female_Member(unsigned int data_in, std::string name, std::string pw, unsigned int c);
     ~Female_Member(){
     }
 
@@ -93,12 +92,10 @@ private:
     unsigned int    cardio;
 };
 
-Member::Member(unsigned int data_in, std::string name) : 
-    ID(data_in), nickname(name) {  
-    std::cout << "Enter Password (0000 ~ 9999) : ";
-    std::cin >> password;
-
+Member::Member(unsigned int data_in, std::string name, std::string pw) : 
+    ID(data_in), nickname(name), password(pw) {  
     head = NULL;
+    hw_count = 0;
     goal = 0;
 }
 
@@ -117,11 +114,6 @@ Member::~Member() {
     std::cout << nickname << " is deleted" << std::endl;
 }
 
-bool Member::match_nickname(std::string name)
-{
-    return nickname.compare(name) == 0 ? true : false;
-}
-
 unsigned int Member::getID()
 {
     return ID;
@@ -129,6 +121,7 @@ unsigned int Member::getID()
 
 bool Member::log_in(std::string pw)
 {
+    std::cout << password << " " << pw << std::endl;
     return password.compare(pw) == 0 ? true : false;
 }
 
@@ -141,6 +134,7 @@ void Member::show_member_info()
 
 void Member::body_check(int h, int w) {
     node* temp = new node(h, w, NULL);
+    hw_count++;
 
     if(head == NULL)
         head = temp;
@@ -151,7 +145,6 @@ void Member::body_check(int h, int w) {
             tempt = tempt->next_node;
         tempt->next_node = temp;
     }
-    std::cout << std::endl;
 }
 
 void Member::show_body_chart() {
@@ -171,7 +164,7 @@ void Member::show_body_chart() {
     std::cout << std::endl << std::endl;
 }
 
-Male_Member::Male_Member(unsigned int data_in, std::string name) : Member(data_in, name){
+Male_Member::Male_Member(unsigned int data_in, std::string name, std::string pw) : Member(data_in, name, pw){
     bench = 0;
     squat = 0;
     deadlift = 0;
@@ -179,11 +172,10 @@ Male_Member::Male_Member(unsigned int data_in, std::string name) : Member(data_i
     work_out_partition = 0;
 }
 
-Male_Member::Male_Member(unsigned int data_in, std::string name, 
+Male_Member::Male_Member(unsigned int data_in, std::string name, std::string pw,
     unsigned int b, unsigned int s, unsigned int d, unsigned int wf, unsigned int wp) :
-    Member(data_in, name), bench(b), squat(s), deadlift(d), work_out_frequency(wf), work_out_partition(wp) {
+    Member(data_in, name, pw), bench(b), squat(s), deadlift(d), work_out_frequency(wf), work_out_partition(wp) {
 }
-
 
 void Male_Member::save_file()
 {
@@ -192,26 +184,56 @@ void Male_Member::save_file()
     f.append(".txt");
     std::ofstream memberData;
     memberData.open(f, std::ios::out | std::ios::trunc);
-    memberData << password << " ";
-    memberData << nickname << " ";
-    
-    
+    memberData << nickname << "\n";
+    memberData << password << "\n";
+    memberData << bench << "\n";
+    memberData << squat << "\n";
+    memberData << deadlift << "\n";
+    memberData << work_out_frequency << "\n";
+    memberData << work_out_partition << "\n";
+    memberData << hw_count << "\n";
+
+    node* temp = head;
+    while(temp != NULL)
+    {
+        memberData << temp->height << "\n";
+        memberData << temp->weight << "\n";
+        temp = temp->next_node;
+    }
+
     memberData.close();
 
 }
 
-Female_Member::Female_Member(unsigned int data_in, std::string name) : Member(data_in, name){
+Female_Member::Female_Member(unsigned int data_in, std::string name, std::string pw) : Member(data_in, name, pw){
     cardio = 0;
 }
 
-Female_Member::Female_Member(unsigned int data_in, std::string name, unsigned int c) :
-    Member(data_in, name), cardio(c){
+Female_Member::Female_Member(unsigned int data_in, std::string name, std::string pw, unsigned int c) :
+    Member(data_in, name, pw), cardio(c){
 }
 
 void Female_Member::save_file()
 {
-    std::cout << "woman save";
-    
+    std::string f = "db/";
+    f.append(std::to_string(ID));
+    f.append(".txt");
+    std::ofstream memberData;
+    memberData.open(f, std::ios::out | std::ios::trunc);
+    memberData << nickname << "\n";
+    memberData << password << "\n";
+    memberData << cardio << "\n";
+    memberData << hw_count << "\n";
+
+    node* temp = head;
+    while(temp != NULL)
+    {
+        memberData << temp->height << "\n";
+        memberData << temp->weight << "\n";
+        temp = temp->next_node;
+    }
+
+    memberData.close();
 }
 
 
