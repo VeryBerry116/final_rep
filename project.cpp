@@ -10,7 +10,7 @@ int main(){
     std::string temp;
     std::string name, gender, pw;
 
-    openai::start();
+    //openai::start();
 
     std::ifstream memberList("MemberList.txt");
     if(!memberList.fail())

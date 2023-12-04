@@ -1,4 +1,4 @@
-#include "openai.hpp"
+//#include "openai.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -56,7 +56,7 @@ class Male_Member : public Member {
 public:
     Male_Member(unsigned int data_in, std::string name, std::string pw);
     Male_Member(unsigned int data_in, std::string name, std::string pw,
-        unsigned int b, unsigned int s, unsigned int d, unsigned int wf, unsigned int wp);
+        unsigned int b, unsigned int s, unsigned int d, unsigned int wf);
     ~Male_Member(){
     }
 
@@ -186,7 +186,7 @@ void Male_Member::make_work_out_plan()
     std::cout << "How much exercise will you do (per week, 1 ~ 7)? ";
     std::cin >> work_out_frequency;
 
-    string cmd = "I'm man. My bench 1RM weight is ";
+    std::string cmd = "I'm man. My bench 1RM weight is ";
     cmd.append(std::to_string(bench));
     cmd.append("kg. My squat 1RM weight is ");
     cmd.append(std::to_string(squat));
