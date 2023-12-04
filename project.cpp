@@ -11,7 +11,7 @@ int main(){
     int menu, submenu, num_member, nheight, nweight, mf, nb, ns, nd, nwf, nwp, nc, nhwc;
     std::string temp;
     std::string name, gender, pw;
-    /*std::ifstream memberList("MemberList.txt");
+    std::ifstream memberList("MemberList.txt");
     if(!memberList.fail())
     {
         std::cout << "Loading DB file..." << std::endl;
@@ -76,7 +76,7 @@ int main(){
         }
     }
 
-    memberList.close();*/
+    memberList.close();
     while(1)
     {
         show_menu();
@@ -118,7 +118,7 @@ int main(){
         else if(menu == 2)
         {
             std::cout << "Enter Nickname : ";
-            std::cin >> temp;
+            std::cin >> name;
             if(find_member(name) == 0)
                 std::cout << "He/She is not joined" << std::endl << std::endl;
             else if(find_member(name) == 1)
@@ -166,7 +166,7 @@ int main(){
 
 
             std::cout << "Enter Nickname : ";
-            std::cin >> temp;
+            std::cin >> name;
             if(find_member(name) == 0)
                 std::cout << "He/She is not joined" << std::endl;
             else if(find_member(name) == 1)
