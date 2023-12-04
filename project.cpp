@@ -1,5 +1,3 @@
-//#include "openai.hpp"
-
 #include "project.h"
 
 std::map<std::string, Male_Member*> mlist;
@@ -8,9 +6,12 @@ std::map<std::string, Female_Member*> flist;
 unsigned int member_count = 0;
 
 int main(){
-    int menu, submenu, num_member, nheight, nweight, mf, nb, ns, nd, nwf, nwp, nc, nhwc;
+    int menu, submenu, num_member, nheight, nweight, mf, nb, ns, nd, nwf, nc, nhwc;
     std::string temp;
     std::string name, gender, pw;
+
+    openai::start();
+
     std::ifstream memberList("MemberList.txt");
     if(!memberList.fail())
     {
@@ -41,9 +42,8 @@ int main(){
                     memberData >> ns;
                     memberData >> nd;
                     memberData >> nwf;
-                    memberData >> nwp;
                     memberData >> nhwc;
-                    Male_Member *mnode = new Male_Member(num_member, name, pw, nb, ns, nd, nwf, nwp);
+                    Male_Member *mnode = new Male_Member(num_member, name, pw, nb, ns, nd, nwf);
                     for(int i = 0; i < nhwc; i++)
                     {
                         if(memberData.eof())
@@ -152,19 +152,6 @@ int main(){
         }
         else if(menu == 3)
         {
-            for(auto miter = mlist.begin(); miter != mlist.end(); miter++)
-            {
-                unsigned int mid = (miter->second)->getID();
-                std::cout << mid << std::endl;
-            }
-            for(auto fiter = flist.begin(); fiter != flist.end(); fiter++)
-            {
-                unsigned int fid = (fiter->second)->getID();
-                std::cout << fid << std::endl;
-            }
-
-
-
             std::cout << "Enter Nickname : ";
             std::cin >> name;
             if(find_member(name) == 0)
@@ -207,7 +194,7 @@ int main(){
                     }
                     else if(submenu == 4)
                     {
-                        std::cout << "New Plan" << std::endl;
+                        mnode->make_work_out_plan();
                     }
                     else if(submenu == 5)
                     {

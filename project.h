@@ -1,3 +1,5 @@
+#include "openai.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -15,14 +17,6 @@ unsigned int work_per_week[8][7] = {
     { 1, 1, 0, 1, 1, 0, 1 },
     { 1, 1, 1, 0, 1, 1, 1 },
     { 1, 1, 1, 1, 1, 1, 1 }
-};
-
-// chest = 1, back = 2, leg = 3, arm = 4, shoulder =5
-unsigned int work_partition[4][5] = {
-    { 1, 3, 2, 3, 0 },          // 2
-    { 1, 2, 3, 0, 0 },          // 3
-    { 1, 2, 3, 4, 0 },          // 4
-    { 1, 2, 3, 4, 5 }           // 5
 };
 
 class Member{
@@ -52,13 +46,11 @@ public:
     ~Member();
 
     unsigned int getID();
-    bool match_name()
     bool log_in(std::string pw);
     void show_member_info();
     void body_check(int h, int w);
     void show_body_chart();
 };
-
 
 class Male_Member : public Member {
 public:
@@ -68,7 +60,7 @@ public:
     ~Male_Member(){
     }
 
-    //void make_work_out_plan;
+    void make_work_out_plan();
     void save_file();
 
 private:
@@ -76,7 +68,6 @@ private:
     unsigned int    squat;
     unsigned int    deadlift;
     unsigned int    work_out_frequency;
-    unsigned int    work_out_partition;
 };
 
 class Female_Member : public Member {
@@ -169,12 +160,48 @@ Male_Member::Male_Member(unsigned int data_in, std::string name, std::string pw)
     squat = 0;
     deadlift = 0;
     work_out_frequency = 0;
-    work_out_partition = 0;
 }
 
 Male_Member::Male_Member(unsigned int data_in, std::string name, std::string pw,
-    unsigned int b, unsigned int s, unsigned int d, unsigned int wf, unsigned int wp) :
-    Member(data_in, name, pw), bench(b), squat(s), deadlift(d), work_out_frequency(wf), work_out_partition(wp) {
+    unsigned int b, unsigned int s, unsigned int d, unsigned int wf) :
+    Member(data_in, name, pw), bench(b), squat(s), deadlift(d), work_out_frequency(wf) {
+}
+
+void Male_Member::make_work_out_plan()
+{
+    if(bench != 0)
+    {
+        std::cout << std::endl;
+        std::cout << "Last your work out plan information" << std::endl;
+        std::cout << "Bench\tSquat\tDeadlift\tWF\n";
+        std::cout << bench << "\t" << squat << "\t" << deadlift << "\t\t" << work_out_frequency;
+        std::cout << std::endl << std::endl;
+    }
+    std::cout << "What do you bench? ";
+    std::cin >> bench;
+    std::cout << "What do you squat? ";
+    std::cin >> squat;
+    std::cout << "What do you deadlift? ";
+    std::cin >> deadlift;
+    std::cout << "How much exercise will you do (per week, 1 ~ 7)? ";
+    std::cin >> work_out_frequency;
+
+    string cmd = "I'm man. My bench 1RM weight is ";
+    cmd.append(std::to_string(bench));
+    cmd.append("kg. My squat 1RM weight is ");
+    cmd.append(std::to_string(squat));
+    cmd.append("kg. My deadlift 1RM weight is ");
+    cmd.append(std::to_string(deadlift));
+    cmd.append("kg. Make work out program for 7 days. I will go gym ");
+    cmd.append(std::to_string(work_out_frequency));
+    cmd.append(" times per week. Return work out program with weight, reps.");
+
+
+    
+    int findex = 0;
+    int pindex = 0;
+
+    
 }
 
 void Male_Member::save_file()
@@ -190,7 +217,6 @@ void Male_Member::save_file()
     memberData << squat << "\n";
     memberData << deadlift << "\n";
     memberData << work_out_frequency << "\n";
-    memberData << work_out_partition << "\n";
     memberData << hw_count << "\n";
 
     node* temp = head;
